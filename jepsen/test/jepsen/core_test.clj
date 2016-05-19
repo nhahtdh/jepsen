@@ -1,14 +1,14 @@
 (ns jepsen.core-test
-  (:use jepsen.core
-        jepsen.control.net
-        clojure.test
+  (:use clojure.test
         clojure.pprint
         clojure.tools.logging)
   (:require [clojure.string :as str]
+            [jepsen.core :as jepsen]
             [jepsen.os :as os]
             [jepsen.db :as db]
             [jepsen.tests :as tst]
             [jepsen.control :as control]
+            [jepsen.control.net :as net]
             [jepsen.client :as client]
             [jepsen.generator :as gen]
             [jepsen.store :as store]
@@ -19,7 +19,7 @@
   (let [state (atom nil)
         db    (tst/atom-db state)
         n     10
-        test  (run! (assoc tst/noop-test
+        test  (jepsen/run! (assoc tst/noop-test
                            :db         (tst/atom-db state)
                            :client     (tst/atom-client state)
                            :generator  (->> gen/cas
@@ -36,7 +36,7 @@
         db-primaries (atom [])
         nonce        (rand-int Integer/MAX_VALUE)
         nonce-file   "/tmp/jepsen-test"
-        test (run! (assoc tst/noop-test
+        test (jepsen/run! (assoc tst/noop-test
                           :name      "ssh test"
                           :os (reify os/OS
                                 (setup! [_ test node]
@@ -77,18 +77,18 @@
                                slurp
                                str/trim)))))
     (is (= @os-startups @os-teardowns @db-startups @db-teardowns
-           {:n1 (:n1 hosts-map)
-            :n2 (:n2 hosts-map)
-            :n3 (:n3 hosts-map)
-            :n4 (:n4 hosts-map)
-            :n5 (:n5 hosts-map)}))
-    (is (= @db-primaries [(:n1 hosts-map)]))))
+           {:n1 (:n1 net/hosts-map)
+            :n2 (:n2 net/hosts-map)
+            :n3 (:n3 net/hosts-map)
+            :n4 (:n4 net/hosts-map)
+            :n5 (:n5 net/hosts-map)}))
+    (is (= @db-primaries [(:n1 net/hosts-map)]))))
 
 (deftest worker-recovery-test
   ; Workers should only consume n ops even when failing.
   (let [invocations (atom 0)
         n 30]
-    (run! (assoc tst/noop-test
+    (jepsen/run! (assoc tst/noop-test
                  :client (reify client/Client
                            (setup! [c _ _] c)
                            (invoke! [_ _ _]
