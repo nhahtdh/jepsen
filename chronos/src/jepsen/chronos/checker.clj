@@ -295,7 +295,7 @@
   "Constructs a Jepsen checker."
   []
   (reify Checker
-    (check [_ test model history]
+    (check [_ test model history opts]
       (let [read-time (->> history
                            rseq
                            ; TODO: make sure invocation and completion

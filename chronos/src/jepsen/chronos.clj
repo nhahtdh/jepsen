@@ -61,6 +61,7 @@
   (let [mesosphere (mesosphere/db mesos-version)]
     (reify db/DB
       (setup! [_ test node]
+        (info "setting up db on " node)
         (db/setup! mesosphere test node)
 
         (debian/install {:chronos chronos-version})
@@ -72,7 +73,7 @@
       (teardown! [_ test node]
         (info node "stopping chronos")
         (c/su (meh (c/exec :service :chronos :stop))
-              (meh (cu/grepkill "/usr/bin/chronos")))
+              (meh (cu/grepkill! "/usr/bin/chronos")))
         (db/teardown! mesosphere test node)
         (c/su (c/exec :rm :-rf job-dir)
               (c/exec :truncate :--size 0 "/var/log/messages")))
