@@ -146,8 +146,6 @@
       (c/su
         ; Packages!
         (install [:wget
-                  :sysvinit-core
-                  :sysvinit
                   :sysvinit-utils
                   :curl
                   :vim
