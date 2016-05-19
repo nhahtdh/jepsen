@@ -26,7 +26,7 @@
 (defn install!
   [test node version]
   (debian/add-repo! :mesosphere
-                    "deb http://repos.mesosphere.io/debian wheezy main"
+                    "deb http://repos.mesosphere.io/debian jessie main"
                     "keyserver.ubuntu.com"
                     "E56151BF")
   (debian/install {:mesos version})
