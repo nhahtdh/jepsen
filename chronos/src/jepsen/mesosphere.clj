@@ -27,7 +27,7 @@
   [test node version]
   (debian/add-repo! :mesosphere
                     "deb http://repos.mesosphere.io/debian jessie main"
-                    "keyserver.ubuntu.com"
+                    "hkp://keyserver.ubuntu.com:80"
                     "E56151BF")
   (debian/install {:mesos version})
   (c/su
