@@ -146,9 +146,10 @@
       (c/su
         ; Packages!
         (install [:wget
-                  :sysvinit-core
                   :sysvinit
                   :sysvinit-utils
+                  :systemd
+                  :systemd-sysv
                   :curl
                   :vim
                   :man-db
@@ -159,10 +160,7 @@
                   :iputils-ping
                   :rsyslog
                   :logrotate])
-
-        ; Fucking systemd breaks a bunch of packages
-        (if (installed? :systemd)
-          (c/exec :apt-get :remove :-y :--purge :--auto-remove :systemd)))
+      )
 
       (meh (net/heal)))
 

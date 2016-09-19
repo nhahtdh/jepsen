@@ -48,10 +48,10 @@
   "Starts chronos if it's not already running."
   [test node]
   (c/su
-    (try (c/exec :service :chronos :status)
+    (try (c/exec :systemctl :status :chronos)
          (catch RuntimeException e
            (info node "starting chronos")
-           (c/exec :service :chronos :start)))))
+           (c/exec :systemctl :start :chronos)))))
 
 (defn db
   "Sets up and tears down Chronos. You can get versions from
@@ -72,7 +72,7 @@
 
       (teardown! [_ test node]
         (info node "stopping chronos")
-        (c/su (meh (c/exec :service :chronos :stop))
+        (c/su (meh (c/exec :systemctl :stop :chronos))
               (meh (cu/grepkill! "/usr/bin/chronos")))
         (db/teardown! mesosphere test node)
         (c/su (c/exec :rm :-rf job-dir)
