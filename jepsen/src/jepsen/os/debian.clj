@@ -101,6 +101,7 @@
   "Receives an apt key from the given keyserver."
   [keyserver key]
   (c/su
+    (info "add-key: " key)
     (c/exec :apt-key :adv
             :--keyserver keyserver
             :--recv key)))
@@ -110,6 +111,7 @@
   ([repo-name apt-line]
    (add-repo! repo-name apt-line nil nil))
   ([repo-name apt-line keyserver key]
+   (info "add-repo: " repo-name apt-line keyserver key)
    (let [list-file (str "/etc/apt/sources.list.d/" (name repo-name) ".list")]
      (when-not (cu/exists? list-file)
        (info "setting up" repo-name "apt repo")

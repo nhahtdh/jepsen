@@ -78,7 +78,11 @@
   "Wraps command in a sudo subshell."
   [cmd]
   (if *sudo*
-    (merge cmd {:cmd (str "sudo -S -u " *sudo* " bash -c " (escape (:cmd cmd)))
+    (merge cmd {:cmd (str "sudo "
+                          ; "http_proxy=http://proxy.example.com:8080 "
+                          ; "https_proxy=https://proxy.example.com:8080 "
+                          ; "ftp_proxy=ftp://proxy.example.com:8080 "
+                          "-S -u " *sudo* " bash -c " (escape (:cmd cmd)))
                 :in  (if *password*
                        (str *password* "\n" (:in cmd))
                        (:in cmd))})
@@ -117,6 +121,7 @@
 (defn exec*
   "Like exec, but does not escape."
   [& commands]
+  (info commands)
   (->> commands
        (str/join " ")
        (array-map :cmd)
